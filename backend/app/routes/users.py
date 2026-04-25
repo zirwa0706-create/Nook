@@ -104,3 +104,23 @@ def search():
         return jsonify({'users': []}), 200
     results = User.query.filter(User.username.ilike(f'%{q}%')).limit(10).all()
     return jsonify({'users': [u.to_dict() for u in results]}), 200
+
+
+@users_bp.route('/stories/feed', methods=['GET'])
+@login_required
+def stories_feed():
+    from app.models.post import FriendRequest, Story
+    from datetime import datetime
+    accepted = FriendRequest.query.filter(
+        ((FriendRequest.sender_id == current_user.id) | (FriendRequest.receiver_id == current_user.id)),
+        FriendRequest.status == 'accepted'
+    ).all()
+    friend_ids = set()
+    for fr in accepted:
+        friend_ids.add(fr.sender_id if fr.receiver_id == current_user.id else fr.receiver_id)
+    friend_ids.add(current_user.id)
+    stories = Story.query.filter(
+        Story.user_id.in_(friend_ids),
+        Story.expires_at > datetime.utcnow()
+    ).order_by(Story.created_at.desc()).all()
+    return jsonify({'stories': [s.to_dict() for s in stories]}), 200

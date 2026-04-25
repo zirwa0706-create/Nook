@@ -1,0 +1,167 @@
+/* ── Nook design tokens ──────────────────────────────── */
+:root {
+  --bg-base:    #FDF8F3;
+  --bg-card:    #FFF5EC;
+  --bg-input:   #FBF0E6;
+  --bg-hover:   #F5E6D5;
+
+  --acc:        #A0522D;
+  --acc-light:  #C8724A;
+  --acc-gold:   #C8972A;
+  --acc-blue:   #6B8EAA;
+
+  --tx-primary: #2D1A0E;
+  --tx-second:  #6B4226;
+  --tx-muted:   #9B6848;
+  --tx-on-acc:  #FFF5EC;
+
+  --bdr:        #E8C99A;
+  --bdr-light:  #F0DEC0;
+
+  --radius-sm:  8px;
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --radius-xl:  22px;
+
+  --shadow:     0 1px 4px rgba(100,50,10,0.07);
+}
+
+[data-theme="dark"] {
+  --bg-base:    #1E1510;
+  --bg-card:    #251A12;
+  --bg-input:   #2E2018;
+  --bg-hover:   #352518;
+
+  --acc:        #C8724A;
+  --acc-light:  #E8915A;
+  --acc-gold:   #D4A035;
+  --acc-blue:   #7AAAC8;
+
+  --tx-primary: #F2E4D4;
+  --tx-second:  #C4956A;
+  --tx-muted:   #7A5A40;
+  --tx-on-acc:  #1E1510;
+
+  --bdr:        #3D2A1C;
+  --bdr-light:  #2E2018;
+
+  --shadow:     0 1px 4px rgba(0,0,0,0.3);
+}
+
+/* ── Reset ───────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg-base);
+  color: var(--tx-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+  transition: background .3s, color .3s;
+}
+
+a { color: var(--acc); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+input, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--tx-primary);
+  background: var(--bg-input);
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color .15s;
+}
+
+input:focus, textarea:focus {
+  border-color: var(--acc);
+}
+
+/* ── Utility classes ─────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 0.5px solid var(--bdr);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.btn-primary {
+  background: var(--acc);
+  color: var(--tx-on-acc);
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background .15s, transform .1s;
+}
+.btn-primary:hover  { background: var(--acc-light); }
+.btn-primary:active { transform: scale(0.98); }
+
+.btn-secondary {
+  background: var(--bg-hover);
+  color: var(--tx-second);
+  border-radius: var(--radius-sm);
+  padding: 9px 18px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background .15s;
+}
+.btn-secondary:hover { background: var(--bdr); }
+
+.btn-ghost {
+  color: var(--tx-muted);
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  transition: background .15s, color .15s;
+}
+.btn-ghost:hover { background: var(--bg-hover); color: var(--acc); }
+
+.avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--acc), var(--acc-gold));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  color: var(--tx-on-acc);
+  font-size: 14px;
+}
+
+.badge {
+  background: var(--bg-hover);
+  color: var(--tx-second);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.divider {
+  height: 0.5px;
+  background: var(--bdr);
+  border: none;
+  margin: 0;
+}
+
+.text-muted   { color: var(--tx-muted); font-size: 13px; }
+.text-second  { color: var(--tx-second); }
+.text-primary { color: var(--tx-primary); }
+.font-500     { font-weight: 500; }
+
+/* ── Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--bdr); border-radius: 10px; }

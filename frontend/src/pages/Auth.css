@@ -1,0 +1,127 @@
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  background: var(--bg-base);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 36px 32px;
+}
+
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--acc);
+}
+
+.auth-logo-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--acc);
+  color: var(--tx-on-acc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.auth-tagline {
+  font-size: 14px;
+  color: var(--tx-muted);
+  margin-bottom: 24px;
+}
+
+.auth-tabs {
+  display: flex;
+  background: var(--bg-input);
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  margin-bottom: 24px;
+  gap: 3px;
+}
+
+.auth-tabs button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--tx-muted);
+  transition: background .15s, color .15s;
+}
+
+.auth-tabs button.active {
+  background: var(--bg-card);
+  color: var(--acc);
+  box-shadow: 0 1px 3px rgba(100,50,10,.1);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--tx-second);
+}
+
+.field input {
+  width: 100%;
+  padding: 10px 13px;
+  font-size: 14px;
+  border-radius: var(--radius-sm);
+}
+
+.auth-error {
+  font-size: 13px;
+  color: #C0392B;
+  background: #FDF0EE;
+  border: 0.5px solid #E8A89A;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+}
+
+[data-theme="dark"] .auth-error {
+  background: #2D1510;
+  border-color: #5A2820;
+  color: #E8907A;
+}
+
+.auth-submit {
+  width: 100%;
+  padding: 11px;
+  font-size: 15px;
+  margin-top: 4px;
+}
+
+.auth-submit:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.auth-footer {
+  margin-top: 24px;
+  font-size: 12px;
+  color: var(--tx-muted);
+}

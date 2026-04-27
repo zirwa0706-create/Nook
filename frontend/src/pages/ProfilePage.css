@@ -1,0 +1,61 @@
+.profile-page { padding: 0 28px 60px; }
+.profile-inner { max-width: 620px; margin: 0 auto; padding-top: 40px; display: flex; flex-direction: column; gap: 16px; }
+
+.profile-header { display: flex; gap: 24px; padding: 28px; align-items: flex-start; }
+
+.profile-avatar-wrap { position: relative; flex-shrink: 0; }
+.profile-avatar { cursor: default; }
+.avatar-edit-btn {
+  position: absolute; bottom: 0; right: 0;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--acc); color: var(--tx-on-acc);
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--bg-card);
+  cursor: pointer; transition: background .12s;
+}
+.avatar-edit-btn:hover { background: var(--acc-light); }
+
+.profile-info { flex: 1; min-width: 0; }
+
+.profile-name-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.profile-name { font-size: 20px; font-weight: 500; color: var(--tx-primary); }
+
+.privacy-badge {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px; color: var(--tx-muted);
+  background: var(--bg-input);
+  border: 0.5px solid var(--bdr);
+  padding: 3px 8px; border-radius: 20px;
+}
+
+.profile-bio { font-size: 14px; color: var(--tx-second); line-height: 1.6; margin-bottom: 6px; }
+.profile-joined { font-size: 12px; margin-bottom: 14px; }
+.profile-actions { display: flex; gap: 8px; }
+
+.profile-edit-form { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.profile-bio-input {
+  width: 100%; padding: 10px 13px;
+  border-radius: 9px; font-size: 14px;
+  border: 1px solid var(--bdr);
+  background: var(--bg-input);
+  resize: none; outline: none;
+  transition: border-color .15s;
+}
+.profile-bio-input:focus { border-color: var(--acc); }
+
+.privacy-toggle {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--tx-second); cursor: pointer;
+}
+.privacy-toggle input { accent-color: var(--acc); width: 15px; height: 15px; }
+
+.profile-posts-title {
+  font-size: 15px; font-weight: 500;
+  color: var(--tx-primary); margin-bottom: 14px;
+}
+
+.private-notice, .profile-no-posts {
+  padding: 40px; text-align: center;
+  display: flex; flex-direction: column;
+  align-items: center;
+}

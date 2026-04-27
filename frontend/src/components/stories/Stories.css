@@ -21,9 +21,8 @@
   border-radius: 50%;
   background: linear-gradient(135deg, var(--acc), var(--acc-gold));
 }
-
 .story-ring--add {
-  background: var(--bg-hover);
+  background: none;
   border: 2px dashed var(--bdr);
   padding: 2px;
 }
@@ -33,12 +32,9 @@
   border-radius: 50%;
   overflow: hidden;
 }
-
 .story-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
+  width: 100%; height: 100%;
+  object-fit: cover; border-radius: 50%;
 }
 
 .story-label {
@@ -55,10 +51,8 @@
   font-size: 13px;
   color: var(--tx-muted);
   align-self: center;
-  padding: 8px 0;
 }
 
-/* ── Story viewer overlay ──────────────────────── */
 .story-overlay {
   position: fixed;
   inset: 0;
@@ -68,7 +62,6 @@
   align-items: center;
   justify-content: center;
 }
-
 .story-viewer {
   position: relative;
   max-width: 420px;
@@ -77,25 +70,21 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
-
 .story-viewer-name {
   padding: 12px 16px;
   font-weight: 500;
   font-size: 14px;
   color: var(--tx-primary);
 }
-
 .story-media {
   width: 100%;
   max-height: 70vh;
   object-fit: cover;
   display: block;
 }
-
 .story-close {
   position: absolute;
-  top: 10px;
-  right: 12px;
+  top: 10px; right: 12px;
   font-size: 18px;
   color: var(--tx-muted);
   z-index: 10;

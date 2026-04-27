@@ -5,22 +5,18 @@ import './Stories.css'
 
 export default function StoriesBar() {
   const { user } = useAuth()
-  const [stories, setStories] = useState([])
+  const [stories,   setStories]   = useState([])
   const [uploading, setUploading] = useState(false)
-  const [viewing, setViewing] = useState(null)   // story being viewed fullscreen
+  const [viewing,   setViewing]   = useState(null)
   const fileRef = useRef()
 
-  useEffect(() => {
-    fetchStories()
-  }, [])
+  useEffect(() => { fetchStories() }, [])
 
   const fetchStories = async () => {
     try {
       const r = await axios.get('/api/users/stories/feed')
       setStories(r.data.stories || [])
-    } catch {
-      // no stories yet is fine
-    }
+    } catch { /* no stories yet is fine */ }
   }
 
   const handleUpload = async (e) => {
@@ -32,25 +28,28 @@ export default function StoriesBar() {
     try {
       await axios.post('/api/users/stories', form)
       await fetchStories()
-    } catch (err) {
-      alert('Could not upload story')
+    } catch {
+      alert('Could not upload story. Make sure the file is an image or video.')
     } finally {
       setUploading(false)
+      e.target.value = ''
     }
   }
 
   const initials = (name) => name?.slice(0, 2).toUpperCase()
 
-  // group stories by user
+  // Group stories by user
   const grouped = stories.reduce((acc, s) => {
-    if (!acc[s.user_id]) acc[s.user_id] = { username: s.username, avatar_url: s.avatar_url, stories: [] }
+    if (!acc[s.user_id]) {
+      acc[s.user_id] = { username: s.username, avatar_url: s.avatar_url, stories: [] }
+    }
     acc[s.user_id].stories.push(s)
     return acc
   }, {})
 
   return (
     <div className="stories-bar">
-      {/* Add your own story */}
+      {/* Your story button */}
       <div className="story-item" onClick={() => fileRef.current.click()}>
         <div className="story-ring story-ring--add">
           <div className="avatar avatar-md story-avatar">
@@ -83,10 +82,10 @@ export default function StoriesBar() {
       ))}
 
       {stories.length === 0 && (
-        <p className="stories-empty">No stories yet — be the first!</p>
+        <p className="stories-empty">No stories yet — upload yours!</p>
       )}
 
-      {/* Story viewer overlay */}
+      {/* Fullscreen story viewer */}
       {viewing && (
         <div className="story-overlay" onClick={() => setViewing(null)}>
           <div className="story-viewer" onClick={e => e.stopPropagation()}>

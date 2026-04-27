@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_login import login_required, current_user
 from app import db, socketio
 from app.models.post import Post, Like, Comment, Notification
@@ -11,6 +11,15 @@ ALLOWED = {'png', 'jpg', 'jpeg', 'gif', 'webp', 'mp4', 'mov'}
 
 def allowed(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED
+
+def save_file(file):
+    """Save uploaded file and return its URL. Works on Windows & Mac."""
+    ext        = file.filename.rsplit('.', 1)[1].lower()
+    filename   = f"{uuid.uuid4().hex}.{ext}"
+    upload_dir = current_app.config['UPLOAD_FOLDER']
+    os.makedirs(upload_dir, exist_ok=True)
+    file.save(os.path.join(upload_dir, filename))
+    return f"/uploads/{filename}", ('video' if ext in {'mp4', 'mov'} else 'image')
 
 
 @posts_bp.route('/feed', methods=['GET'])
@@ -42,14 +51,15 @@ def create_post():
         return jsonify({'error': 'Post cannot be empty'}), 400
 
     media_url, media_type = '', ''
-    if media and allowed(media.filename):
-        ext        = media.filename.rsplit('.', 1)[1].lower()
-        filename   = f"{uuid.uuid4().hex}.{ext}"
-        media_type = 'video' if ext in {'mp4', 'mov'} else 'image'
-        media.save(os.path.join('uploads', filename))
-        media_url = f"/uploads/{filename}"
+    if media and media.filename and allowed(media.filename):
+        media_url, media_type = save_file(media)
 
-    post = Post(user_id=current_user.id, body=body or '', media_url=media_url, media_type=media_type)
+    post = Post(
+        user_id    = current_user.id,
+        body       = body,
+        media_url  = media_url,
+        media_type = media_type
+    )
     db.session.add(post)
     db.session.commit()
 
@@ -73,10 +83,10 @@ def toggle_like(post_id):
 
     if post.user_id != current_user.id:
         notif = Notification(
-            user_id=post.user_id,
-            type='like',
-            message=f"{current_user.username} liked your post",
-            ref_id=post_id
+            user_id = post.user_id,
+            type    = 'like',
+            message = f"{current_user.username} liked your post",
+            ref_id  = post_id
         )
         db.session.add(notif)
         db.session.commit()
@@ -95,7 +105,8 @@ def comments(post_id):
     if request.method == 'GET':
         return jsonify({'comments': [c.to_dict() for c in post.comments]}), 200
 
-    body = request.get_json().get('body', '').strip()
+    data = request.get_json()
+    body = data.get('body', '').strip() if data else ''
     if not body:
         return jsonify({'error': 'Comment cannot be empty'}), 400
 
@@ -104,10 +115,10 @@ def comments(post_id):
 
     if post.user_id != current_user.id:
         notif = Notification(
-            user_id=post.user_id,
-            type='comment',
-            message=f"{current_user.username} commented on your post",
-            ref_id=post_id
+            user_id = post.user_id,
+            type    = 'comment',
+            message = f"{current_user.username} commented on your post",
+            ref_id  = post_id
         )
         db.session.add(notif)
         db.session.commit()

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask_login import login_required, current_user
 from app import db
 from app.models.user import User
@@ -7,6 +7,16 @@ from datetime import datetime, timedelta
 import os, uuid
 
 users_bp = Blueprint('users', __name__)
+
+def save_file(file):
+    """Save uploaded file and return its URL. Works on Windows & Mac."""
+    ext        = file.filename.rsplit('.', 1)[1].lower()
+    filename   = f"{uuid.uuid4().hex}.{ext}"
+    upload_dir = current_app.config['UPLOAD_FOLDER']
+    os.makedirs(upload_dir, exist_ok=True)
+    file.save(os.path.join(upload_dir, filename))
+    media_type = 'video' if ext in {'mp4', 'mov'} else 'image'
+    return f"/uploads/{filename}", media_type
 
 
 @users_bp.route('/<int:user_id>', methods=['GET'])
@@ -23,12 +33,13 @@ def get_profile(user_id):
             FriendRequest.status == 'accepted'
         ).first()
         if not is_friend:
-            data['posts']  = []
+            data['posts']   = []
             data['private'] = True
             return jsonify({'user': data}), 200
 
     data['posts'] = [p.to_dict(current_user.id) for p in
-                     Post.query.filter_by(user_id=user_id).order_by(Post.created_at.desc()).all()]
+                     Post.query.filter_by(user_id=user_id)
+                               .order_by(Post.created_at.desc()).all()]
     return jsonify({'user': data}), 200
 
 
@@ -50,10 +61,8 @@ def upload_avatar():
     file = request.files.get('avatar')
     if not file:
         return jsonify({'error': 'No file provided'}), 400
-    ext      = file.filename.rsplit('.', 1)[1].lower()
-    filename = f"avatar_{uuid.uuid4().hex}.{ext}"
-    file.save(os.path.join('uploads', filename))
-    current_user.avatar_url = f"/uploads/{filename}"
+    url, _ = save_file(file)
+    current_user.avatar_url = url
     db.session.commit()
     return jsonify({'avatar_url': current_user.avatar_url}), 200
 
@@ -69,7 +78,8 @@ def get_notifications():
 @users_bp.route('/notifications/read', methods=['POST'])
 @login_required
 def mark_read():
-    Notification.query.filter_by(user_id=current_user.id, is_read=False).update({'is_read': True})
+    Notification.query.filter_by(user_id=current_user.id, is_read=False)\
+                      .update({'is_read': True})
     db.session.commit()
     return jsonify({'message': 'Marked as read'}), 200
 
@@ -80,14 +90,10 @@ def create_story():
     file = request.files.get('media')
     if not file:
         return jsonify({'error': 'No file'}), 400
-    ext        = file.filename.rsplit('.', 1)[1].lower()
-    filename   = f"story_{uuid.uuid4().hex}.{ext}"
-    media_type = 'video' if ext in {'mp4', 'mov'} else 'image'
-    file.save(os.path.join('uploads', filename))
-
+    url, media_type = save_file(file)
     story = Story(
         user_id    = current_user.id,
-        media_url  = f"/uploads/{filename}",
+        media_url  = url,
         media_type = media_type,
         expires_at = datetime.utcnow() + timedelta(hours=24)
     )
@@ -96,21 +102,10 @@ def create_story():
     return jsonify({'story': story.to_dict()}), 201
 
 
-@users_bp.route('/search', methods=['GET'])
-@login_required
-def search():
-    q = request.args.get('q', '').strip()
-    if not q:
-        return jsonify({'users': []}), 200
-    results = User.query.filter(User.username.ilike(f'%{q}%')).limit(10).all()
-    return jsonify({'users': [u.to_dict() for u in results]}), 200
-
-
 @users_bp.route('/stories/feed', methods=['GET'])
 @login_required
 def stories_feed():
-    from app.models.post import FriendRequest, Story
-    from datetime import datetime
+    from app.models.post import FriendRequest
     accepted = FriendRequest.query.filter(
         ((FriendRequest.sender_id == current_user.id) | (FriendRequest.receiver_id == current_user.id)),
         FriendRequest.status == 'accepted'
@@ -119,8 +114,20 @@ def stories_feed():
     for fr in accepted:
         friend_ids.add(fr.sender_id if fr.receiver_id == current_user.id else fr.receiver_id)
     friend_ids.add(current_user.id)
+
     stories = Story.query.filter(
         Story.user_id.in_(friend_ids),
         Story.expires_at > datetime.utcnow()
     ).order_by(Story.created_at.desc()).all()
     return jsonify({'stories': [s.to_dict() for s in stories]}), 200
+
+
+@users_bp.route('/search', methods=['GET'])
+@login_required
+def search():
+    q = request.args.get('q', '').strip()
+    results = User.query.filter(
+        User.username.ilike(f'%{q}%'),
+        User.id != current_user.id
+    ).limit(10).all()
+    return jsonify({'users': [u.to_dict() for u in results]}), 200

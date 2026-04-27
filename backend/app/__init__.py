@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
@@ -14,6 +14,11 @@ login_manager = LoginManager()
 bcrypt        = Bcrypt()
 socketio      = SocketIO()
 
+# Absolute path to the uploads folder (works on Windows & Mac)
+BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
+UPLOAD_DIR  = os.path.join(BASE_DIR, '..', 'uploads')
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+
 
 def create_app():
     flask_app = Flask(__name__)
@@ -21,8 +26,8 @@ def create_app():
     flask_app.config['SECRET_KEY']                     = os.getenv('SECRET_KEY', 'dev-secret')
     flask_app.config['SQLALCHEMY_DATABASE_URI']        = os.getenv('DATABASE_URL', 'sqlite:///nook.db')
     flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    flask_app.config['UPLOAD_FOLDER']                  = os.getenv('UPLOAD_FOLDER', 'uploads')
-    flask_app.config['MAX_CONTENT_LENGTH']             = int(os.getenv('MAX_CONTENT_LENGTH', 16777216))
+    flask_app.config['UPLOAD_FOLDER']                  = UPLOAD_DIR
+    flask_app.config['MAX_CONTENT_LENGTH']             = 16 * 1024 * 1024  # 16 MB
 
     CORS(flask_app, resources={r"/api/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
 
@@ -46,6 +51,11 @@ def create_app():
     flask_app.register_blueprint(users_bp,   url_prefix='/api/users')
     flask_app.register_blueprint(posts_bp,   url_prefix='/api/posts')
     flask_app.register_blueprint(friends_bp, url_prefix='/api/friends')
+
+    # Serve uploaded files
+    @flask_app.route('/uploads/<path:filename>')
+    def uploaded_file(filename):
+        return send_from_directory(UPLOAD_DIR, filename)
 
     from app.socket import events  # registers socket handlers
 

@@ -7,6 +7,20 @@ from app.models.user import User
 friends_bp = Blueprint('friends', __name__)
 
 
+@friends_bp.route('/status/<int:user_id>', methods=['GET'])
+@login_required
+def get_status(user_id):
+    """Return friendship status between current user and another user."""
+    fr = FriendRequest.query.filter(
+        ((FriendRequest.sender_id == current_user.id) & (FriendRequest.receiver_id == user_id)) |
+        ((FriendRequest.sender_id == user_id) & (FriendRequest.receiver_id == current_user.id))
+    ).first()
+
+    if not fr:
+        return jsonify({'status': 'none'}), 200
+    return jsonify({'status': fr.status, 'request_id': fr.id, 'i_sent': fr.sender_id == current_user.id}), 200
+
+
 @friends_bp.route('/request/<int:user_id>', methods=['POST'])
 @login_required
 def send_request(user_id):
@@ -17,8 +31,9 @@ def send_request(user_id):
         ((FriendRequest.sender_id == current_user.id) & (FriendRequest.receiver_id == user_id)) |
         ((FriendRequest.sender_id == user_id) & (FriendRequest.receiver_id == current_user.id))
     ).first()
+
     if existing:
-        return jsonify({'error': 'Request already exists'}), 409
+        return jsonify({'error': 'Request already exists', 'status': existing.status}), 409
 
     fr = FriendRequest(sender_id=current_user.id, receiver_id=user_id)
     db.session.add(fr)

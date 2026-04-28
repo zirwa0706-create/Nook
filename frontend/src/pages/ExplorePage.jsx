@@ -2,13 +2,15 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Layout from '../components/layout/Layout'
+import RightPanel from '../components/feed/RightPanel'
 import './ExplorePage.css'
 
 export default function ExplorePage() {
-  const [query,   setQuery]   = useState('')
-  const [results, setResults] = useState([])
-  const [searched, setSearched] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [query,     setQuery]     = useState('')
+  const [results,   setResults]   = useState([])
+  const [searched,  setSearched]  = useState(false)
+  const [loading,   setLoading]   = useState(false)
+  const [requested, setRequested] = useState(new Set())
   const navigate = useNavigate()
 
   const search = async (e) => {
@@ -26,7 +28,7 @@ export default function ExplorePage() {
   const sendRequest = async (userId) => {
     try {
       await axios.post(`/api/friends/request/${userId}`)
-      setResults(prev => prev.map(u => u.id === userId ? { ...u, requested: true } : u))
+      setRequested(prev => new Set([...prev, userId]))
     } catch {}
   }
 
@@ -34,23 +36,18 @@ export default function ExplorePage() {
 
   return (
     <Layout>
-      <div className="explore-page">
-        <div className="explore-inner">
+      <div className="content-grid">
+        <div className="content-center">
           <h1 className="page-title">Explore</h1>
-          <p className="page-subtitle">Find people and connect with them</p>
+          <p className="page-subtitle">Search for people to connect with</p>
 
           <form className="search-form" onSubmit={search}>
             <div className="search-box">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="search-icon">
                 <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
               </svg>
-              <input
-                className="search-input"
-                placeholder="Search by username…"
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                autoFocus
-              />
+              <input className="search-input" placeholder="Search by username…"
+                value={query} onChange={e => setQuery(e.target.value)} autoFocus />
             </div>
             <button type="submit" className="btn-primary search-btn" disabled={loading}>
               {loading ? 'Searching…' : 'Search'}
@@ -58,10 +55,7 @@ export default function ExplorePage() {
           </form>
 
           {searched && results.length === 0 && (
-            <div className="explore-empty">
-              <p>No users found for "<strong>{query}</strong>"</p>
-              <p className="text-muted" style={{ marginTop:'6px', fontSize:'13px' }}>Try a different username</p>
-            </div>
+            <p className="text-muted" style={{ padding:'20px 0' }}>No users found for "<strong>{query}</strong>"</p>
           )}
 
           <div className="search-results">
@@ -70,35 +64,28 @@ export default function ExplorePage() {
                 <div className="avatar avatar-lg" style={{ cursor:'pointer', flexShrink:0 }}
                   onClick={() => navigate(`/profile/${u.id}`)}>
                   {u.avatar_url
-                    ? <img src={u.avatar_url} alt={u.username} style={{ width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover' }} />
+                    ? <img src={u.avatar_url} alt={u.username} style={{ width:'100%',height:'100%',borderRadius:'50%',objectFit:'cover' }}/>
                     : initials(u.username)
                   }
                 </div>
                 <div className="user-card-info">
-                  <span className="user-card-name" onClick={() => navigate(`/profile/${u.id}`)}>
-                    {u.username}
-                  </span>
-                  {u.bio && <p className="user-card-bio">{u.bio}</p>}
-                  {!u.bio && <p className="text-muted" style={{ fontSize:'13px' }}>No bio yet</p>}
+                  <span className="user-card-name" onClick={() => navigate(`/profile/${u.id}`)}>{u.username}</span>
+                  <p className="text-muted" style={{ fontSize:'13px' }}>{u.bio || 'No bio yet'}</p>
                 </div>
-                <div className="user-card-actions">
-                  <button className="btn-secondary" onClick={() => navigate(`/profile/${u.id}`)}>
-                    View profile
-                  </button>
-                  {!u.requested && (
-                    <button className="btn-primary" style={{ padding:'8px 16px', fontSize:'13px' }}
-                      onClick={() => sendRequest(u.id)}>
-                      + Add friend
-                    </button>
-                  )}
-                  {u.requested && (
-                    <span style={{ fontSize:'13px', color:'var(--tx-muted)' }}>Request sent</span>
-                  )}
+                <div style={{ display:'flex', gap:'7px', alignItems:'center', flexShrink:0 }}>
+                  <button className="btn-secondary" style={{ fontSize:'13px', padding:'7px 13px' }}
+                    onClick={() => navigate(`/profile/${u.id}`)}>View</button>
+                  {!requested.has(u.id)
+                    ? <button className="btn-primary" style={{ fontSize:'13px', padding:'7px 13px' }}
+                        onClick={() => sendRequest(u.id)}>+ Add</button>
+                    : <span style={{ fontSize:'13px', color:'var(--tx-muted)' }}>Sent</span>
+                  }
                 </div>
               </div>
             ))}
           </div>
         </div>
+        <div className="content-right"><RightPanel /></div>
       </div>
     </Layout>
   )

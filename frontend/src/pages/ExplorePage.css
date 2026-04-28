@@ -1,51 +1,27 @@
-.explore-page { padding: 0 28px 60px; }
-.explore-inner { max-width: 620px; margin: 0 auto; padding-top: 40px; }
-
 .page-title { font-size: 22px; font-weight: 500; color: var(--tx-primary); margin-bottom: 4px; }
-.page-subtitle { font-size: 14px; color: var(--tx-muted); margin-bottom: 28px; }
+.page-subtitle { font-size: 14px; color: var(--tx-muted); margin-bottom: 24px; }
 
-.search-form { display: flex; gap: 10px; margin-bottom: 28px; }
-.search-box {
-  flex: 1; position: relative;
-  display: flex; align-items: center;
-}
-.search-icon {
-  position: absolute; left: 13px;
-  color: var(--tx-muted); pointer-events: none;
-}
+.search-form { display: flex; gap: 10px; margin-bottom: 24px; }
+.search-box { flex: 1; position: relative; display: flex; align-items: center; }
+.search-icon { position: absolute; left: 13px; color: var(--tx-muted); pointer-events: none; }
 .search-input {
-  width: 100%;
-  padding: 11px 14px 11px 40px;
-  border-radius: 10px;
-  font-size: 14px;
-  border: 1px solid var(--bdr);
-  background: var(--bg-card);
-  outline: none;
-  transition: border-color .15s;
+  width: 100%; padding: 11px 14px 11px 40px;
+  border-radius: 10px; font-size: 14px;
+  border: 1px solid var(--bdr); background: var(--bg-card);
+  color: var(--tx-primary); outline: none;
+  transition: border-color .15s; box-sizing: border-box;
 }
 .search-input:focus { border-color: var(--acc); }
 .search-btn { padding: 11px 22px; font-size: 14px; flex-shrink: 0; }
 
-.explore-empty {
-  text-align: center;
-  padding: 40px 20px;
-  color: var(--tx-second);
-  font-size: 15px;
-}
-
+.explore-empty { text-align: center; padding: 40px 20px; color: var(--tx-second); font-size: 15px; }
 .search-results { display: flex; flex-direction: column; gap: 12px; }
 
-.user-card {
-  display: flex; align-items: center;
-  gap: 16px; padding: 18px 20px;
-}
+.user-card { display: flex; align-items: center; gap: 16px; padding: 16px 20px; }
 .user-card-info { flex: 1; min-width: 0; }
 .user-card-name {
-  font-size: 15px; font-weight: 500;
-  color: var(--tx-primary);
-  cursor: pointer; display: block;
-  margin-bottom: 3px;
+  font-size: 15px; font-weight: 500; color: var(--tx-primary);
+  cursor: pointer; display: block; margin-bottom: 3px; transition: color .12s;
 }
 .user-card-name:hover { color: var(--acc); }
-.user-card-bio { font-size: 13px; color: var(--tx-muted); }
 .user-card-actions { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }

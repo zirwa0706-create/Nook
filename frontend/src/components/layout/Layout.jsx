@@ -55,9 +55,12 @@ export default function Layout({ children }) {
           <div className="avatar avatar-sm">{initials}</div>
           <div className="sidebar-user-info">
             <span className="font-500">{user?.username}</span>
-            <span style={{ fontSize: '11px', color: 'var(--tx-muted)' }}>@{user?.username}</span>
+            <span style={{ fontSize:'11px', color:'var(--tx-muted)' }}>@{user?.username}</span>
           </div>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="14" height="14" style={{ marginLeft:'auto', color:'var(--tx-muted)', flexShrink:0 }}><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+            width="14" height="14" style={{ marginLeft:'auto', color:'var(--tx-muted)', flexShrink:0 }}>
+            <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
+          </svg>
         </div>
 
         {showMenu && (
@@ -67,7 +70,9 @@ export default function Layout({ children }) {
         )}
       </aside>
 
-      <main className="main-content">{children}</main>
+      <main className="main-content">
+        {children}
+      </main>
     </div>
   )
 }

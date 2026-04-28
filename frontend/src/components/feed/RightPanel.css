@@ -1,28 +1,32 @@
 .right-panel {
   position: sticky;
-  top: 24px;
+  top: 28px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding-top: 24px;
+  padding-top: 28px;
+  max-height: calc(100vh - 56px);
+  overflow-y: auto;
+  scrollbar-width: none;
 }
+.right-panel::-webkit-scrollbar { display: none; }
 
 .rp-section {
   background: var(--bg-card);
   border: 0.5px solid var(--bdr);
-  border-radius: var(--radius-lg);
+  border-radius: 14px;
   padding: 14px 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 11px;
 }
 
 .rp-title {
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--tx-muted);
   text-transform: uppercase;
-  letter-spacing: .05em;
+  letter-spacing: .06em;
 }
 
 .rp-user {
@@ -40,34 +44,46 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  transition: color .12s;
 }
 .rp-name:hover { color: var(--acc); }
 
 .rp-follow-btn {
   background: var(--bg-hover);
   color: var(--tx-second);
-  border-radius: var(--radius-sm);
+  border-radius: 7px;
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 500;
-  transition: background .15s, color .15s;
   flex-shrink: 0;
+  transition: background .12s, color .12s;
 }
 .rp-follow-btn:hover { background: var(--acc); color: var(--tx-on-acc); }
 
-.rp-notif {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 2px 0;
-}
-.rp-notif-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--bdr);
+.rp-sent {
+  font-size: 12px;
+  color: var(--tx-muted);
   flex-shrink: 0;
-  margin-top: 5px;
 }
-.rp-notif--unread .rp-notif-dot { background: var(--acc); }
-.rp-notif-msg { font-size: 12px; color: var(--tx-second); line-height: 1.4; }
-.rp-notif-time { font-size: 11px; color: var(--tx-muted); margin-top: 2px; }
+
+.rp-accept-btn {
+  background: var(--acc);
+  color: var(--tx-on-acc);
+  border-radius: 7px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+  transition: background .12s;
+}
+.rp-accept-btn:hover { background: var(--acc-light); }
+
+.rp-decline-btn {
+  background: var(--bg-hover);
+  color: var(--tx-muted);
+  border-radius: 7px;
+  padding: 4px 8px;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.rp-decline-btn:hover { background: var(--bdr); }

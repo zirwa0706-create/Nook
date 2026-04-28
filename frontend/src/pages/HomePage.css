@@ -1,20 +1,7 @@
-.home-page {
-  display: grid;
-  grid-template-columns: minmax(0, 600px) 260px;
-  gap: 28px;
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 0 28px 60px;
-}
-
 .feed-column {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding-top: 28px;
-}
-
-.right-column {
   min-width: 0;
 }
 
@@ -33,13 +20,13 @@
   color: #B03A2E;
   background: #FDF0EE;
   border: 0.5px solid #E8B0A8;
-  padding: 14px;
+  padding: 14px 18px;
   border-radius: 10px;
   font-size: 13px;
 }
 
 .feed-empty {
-  padding: 40px 28px;
+  padding: 36px 28px;
   text-align: center;
 }
 
